@@ -46,17 +46,6 @@
                 </audio>
                 <p>Now playing by ${data.user}</p>
             `;
-             const audioPlayer = document.getElementById('audio-player');
-        
-            // Ensure autoplay works even if blocked initially
-            audioPlayer.play().catch(error => {
-                console.warn('Autoplay failed:', error);
-                // Display a play button if autoplay fails
-                const playButton = document.createElement('button');
-                playButton.textContent = 'Play Track';
-                playButton.onclick = () => audioPlayer.play();
-                player.appendChild(playButton);
-            });
         }
     };
 </script>
