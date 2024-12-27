@@ -1,0 +1,62 @@
+<div class="music-room">
+    <h1>Music Room: {{ room.name }}</h1>
+    
+    <div class="participants">
+        <h2>Participants</h2>
+        {% for participant in participants %}
+            <div>{{ participant.user.username }}</div>
+        {% endfor %}
+    </div>
+
+    {% if is_host %}
+    <div class="music-controls">
+        <input type="text" id="track-url" placeholder="Enter track URL">
+        <button onclick="playTrack()">Play Track</button>
+    </div>
+    {% endif %}
+
+    <div id="music-player">
+        <!-- Music player will be implemented with JavaScript/WebSocket -->
+    </div>
+</div>
+
+<script>
+    // WebSocket Connection
+    const roomId = {{ room.id }};
+    const socket = new WebSocket(`ws://${window.location.host}/ws/musicroom/${roomId}/`);
+
+    // Function to play track for all participants
+    function playTrack() {
+        const trackUrl = document.getElementById('track-url').value;
+        socket.send(JSON.stringify({
+            'action': 'play_track',
+            'track': trackUrl
+        }));
+    }
+
+    // Handle incoming WebSocket messages
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.action === 'play_track') {
+            // Update music player with new track
+            const player = document.getElementById('music-player');
+            player.innerHTML = `
+                <audio controls autoplay>
+                    <source src="${data.track}" type="audio/mpeg">
+                </audio>
+                <p>Now playing by ${data.user}</p>
+            `;
+             const audioPlayer = document.getElementById('audio-player');
+        
+            // Ensure autoplay works even if blocked initially
+            audioPlayer.play().catch(error => {
+                console.warn('Autoplay failed:', error);
+                // Display a play button if autoplay fails
+                const playButton = document.createElement('button');
+                playButton.textContent = 'Play Track';
+                playButton.onclick = () => audioPlayer.play();
+                player.appendChild(playButton);
+            });
+        }
+    };
+</script>

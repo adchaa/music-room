@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import MusicRoom, RoomParticipant
 
-# Register your models here.
+# Simple registration
+admin.site.register(MusicRoom)
+admin.site.register(RoomParticipant)
