@@ -1,51 +1,158 @@
-<div class="music-room">
-    <h1>Music Room: {{ room.name }}</h1>
-    
-    <div class="participants">
-        <h2>Participants</h2>
-        {% for participant in participants %}
-            <div>{{ participant.user.username }}</div>
-        {% endfor %}
-    </div>
-
-    {% if is_host %}
-    <div class="music-controls">
-        <input type="text" id="track-url" placeholder="Enter track URL">
-        <button onclick="playTrack()">Play Track</button>
-    </div>
-    {% endif %}
-
-    <div id="music-player">
-        <!-- Music player will be implemented with JavaScript/WebSocket -->
-    </div>
-</div>
-
-<script>
-    // WebSocket Connection
-    const roomId = {{ room.id }};
-    const socket = new WebSocket(`ws://${window.location.host}/ws/musicroom/${roomId}/`);
-
-    // Function to play track for all participants
-    function playTrack() {
-        const trackUrl = document.getElementById('track-url').value;
-        socket.send(JSON.stringify({
-            'action': 'play_track',
-            'track': trackUrl
-        }));
-    }
-
-    // Handle incoming WebSocket messages
-    socket.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-        if (data.action === 'play_track') {
-            // Update music player with new track
-            const player = document.getElementById('music-player');
-            player.innerHTML = `
-                <audio controls autoplay>
-                    <source src="${data.track}" type="audio/mpeg">
-                </audio>
-                <p>Now playing by ${data.user}</p>
-            `;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Room</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
         }
-    };
-</script>
+
+        .music-room {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Participants Section */
+        .participants {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .participants h2 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-decoration: underline;
+        }
+
+        .participants div {
+            padding: 0.3rem 0;
+            font-size: 1rem;
+        }
+
+        /* Music Controls */
+        .music-controls {
+            margin: 2rem 0;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-controls input {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: none;
+            outline: none;
+        }
+
+        .music-controls button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background: #4facfe;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .music-controls button:hover {
+            background: #00c6ff;
+        }
+
+        /* Music Player */
+        #music-player {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        #music-player audio {
+            margin-top: 1rem;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #music-player p {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-room">
+        <h1>Music Room: {{ room.name }}</h1>
+        
+        <div class="participants">
+            <h2>Participants</h2>
+            {% for participant in participants %}
+                <div>{{ participant.user.username }}</div>
+            {% endfor %}
+        </div>
+
+        {% if is_host %}
+        <div class="music-controls">
+            <input type="text" id="track-url" placeholder="Enter track URL">
+            <button onclick="playTrack()">Play Track</button>
+        </div>
+        {% endif %}
+
+        <div id="music-player">
+            <!-- Music player will be implemented with JavaScript/WebSocket -->
+        </div>
+    </div>
+
+    <script>
+        // WebSocket Connection
+        const roomId = {{ room.id }};
+        const socket = new WebSocket(`ws://${window.location.host}/ws/musicroom/${roomId}/`);
+
+        // Function to play track for all participants
+        function playTrack() {
+            const trackUrl = document.getElementById('track-url').value;
+            socket.send(JSON.stringify({
+                'action': 'play_track',
+                'track': trackUrl
+            }));
+        }
+
+        // Handle incoming WebSocket messages
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.action === 'play_track') {
+                // Update music player with new track
+                const player = document.getElementById('music-player');
+                player.innerHTML = `
+                    <audio controls autoplay>
+                        <source src="${data.track}" type="audio/mpeg">
+                    </audio>
+                    <p>Now playing by ${data.user}</p>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>

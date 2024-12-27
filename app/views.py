@@ -15,14 +15,17 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            return redirect('/app') 
+            return redirect('/') 
         else:
             messages.error(request, 'Invalid username or password.')
     
     return render(request, 'auth/login.html')
 
 def home(request):
-    return render(request, 'home.html')
+    if request.user.is_authenticated:
+        return redirect('/create-or-join')
+    else:
+        return render(request, 'home.html')
 
 def signup_view(request):
     if request.method == 'POST':
@@ -31,7 +34,7 @@ def signup_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Account created successfully!')
-            return redirect('/app')
+            return redirect('/')
     else:
         form = SignUpForm()
     return render(request, 'auth/signup.html', {'form': form})

@@ -4,18 +4,119 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
+    <style>
+      /* Global Styles */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f9fafc;
+        color: #333;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar .nav-links {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        color: #0078d7;
+        padding: 6px 12px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .navbar a:hover {
+        background-color: #e6f4ff;
+      }
+
+      .navbar .user-greeting {
+        margin-right: 10px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      /* Main Content Styles */
+      main {
+        text-align: center;
+        margin: 50px auto;
+        padding: 20px;
+      }
+
+      main h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+      }
+
+      main p {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .btn-primary {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #0078d7;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .btn-primary:hover {
+        background-color: #005ea3;
+      }
+
+      /* Footer Styles */
+      footer {
+        text-align: center;
+        padding: 10px 0;
+        margin-top: 50px;
+        background-color: #222;
+        color: #fff;
+        font-size: 14px;
+      }
+    </style>
   </head>
   <body>
+    <!-- Navbar -->
     <nav class="navbar">
+      <div>
+        <h2>My Website</h2>
+      </div>
       <div class="nav-links">
         {% if user.is_authenticated %}
         <span class="user-greeting">Welcome, {{ user.username }}!</span>
-        <a href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
         {% else %}
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'signup' %}">Sign Up</a>
+        <a href="{% url 'login' %}" class="btn-primary">Login</a>
+        <a href="{% url 'signup' %}" class="btn-primary">Sign Up</a>
         {% endif %}
       </div>
     </nav>
+
+    <!-- Main Content -->
+    <main>
+      <h1>Welcome to Our Website!</h1>
+      <p>Explore our features and enjoy seamless navigation.</p>
+      <a href="#" class="btn-primary">Get Started</a>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 My Website. All Rights Reserved.</p>
+    </footer>
   </body>
 </html>
