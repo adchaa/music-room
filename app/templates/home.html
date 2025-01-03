@@ -29,13 +29,6 @@
         align-items: center;
       }
 
-      .navbar a {
-        text-decoration: none;
-        color: #0078d7;
-        padding: 6px 12px;
-        border-radius: 4px;
-        transition: background-color 0.3s;
-      }
 
       .navbar a:hover {
         background-color: #e6f4ff;
@@ -93,30 +86,28 @@
   <body>
     <!-- Navbar -->
     <nav class="navbar">
-      <div>
-        <h2>My Website</h2>
-      </div>
+        <h2>Music Room</h2>
       <div class="nav-links">
         {% if user.is_authenticated %}
-        <span class="user-greeting">Welcome, {{ user.username }}!</span>
-        <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
-        {% else %}
-        <a href="{% url 'login' %}" class="btn-primary">Login</a>
-        <a href="{% url 'signup' %}" class="btn-primary">Sign Up</a>
+          <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
         {% endif %}
       </div>
     </nav>
-
+    
     <!-- Main Content -->
     <main>
-      <h1>Welcome to Our Website!</h1>
-      <p>Explore our features and enjoy seamless navigation.</p>
-      <a href="#" class="btn-primary">Get Started</a>
+      <h1>Welcome to Music Room!</h1>
+      {% if not user.is_authenticated %}
+      <div class="nav-links">
+          <a href="{% url 'login' %}" class="btn-primary">Login</a>
+          <a href="{% url 'signup' %}" class="btn-primary">Sign Up</a>
+      </div>
+      {% else %}
+      <a href="{% url 'random_room' %}" class="btn-primary">Join random room</a>
+      {% endif %}
+
+
     </main>
 
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2024 My Website. All Rights Reserved.</p>
-    </footer>
   </body>
 </html>

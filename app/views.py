@@ -22,10 +22,7 @@ def login_view(request):
     return render(request, 'auth/login.html')
 
 def home(request):
-    if request.user.is_authenticated:
-        return redirect('/create-or-join')
-    else:
-        return render(request, 'home.html')
+    return render(request, 'home.html')
 
 def signup_view(request):
     if request.method == 'POST':

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Room</title>
     <style>
-        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -23,16 +22,37 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        h1 {
-            text-align: center;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
-            font-size: 2rem;
-            text-transform: uppercase;
             border-bottom: 2px solid #4facfe;
             padding-bottom: 0.5rem;
         }
 
-        /* Participants Section */
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background: #ff4757;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: #ff6b81;
+        }
+
         .participants {
             margin: 1.5rem 0;
             padding: 1rem;
@@ -51,7 +71,6 @@
             font-size: 1rem;
         }
 
-        /* Music Controls */
         .music-controls {
             margin: 2rem 0;
             display: flex;
@@ -84,7 +103,6 @@
             background: #00c6ff;
         }
 
-        /* Music Player */
         #music-player {
             margin-top: 2rem;
             text-align: center;
@@ -104,7 +122,10 @@
 </head>
 <body>
     <div class="music-room">
-        <h1>Music Room: {{ room.name }}</h1>
+        <div class="header-container">
+            <h1>Music Room: {{ room.name }}</h1>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
         
         <div class="participants">
             <h2>Participants</h2>
@@ -121,16 +142,13 @@
         {% endif %}
 
         <div id="music-player">
-            <!-- Music player will be implemented with JavaScript/WebSocket -->
         </div>
     </div>
 
     <script>
-        // WebSocket Connection
         const roomId = {{ room.id }};
         const socket = new WebSocket(`ws://${window.location.host}/ws/musicroom/${roomId}/`);
 
-        // Function to play track for all participants
         function playTrack() {
             const trackUrl = document.getElementById('track-url').value;
             socket.send(JSON.stringify({
