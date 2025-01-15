@@ -37,7 +37,17 @@ class MusicRoomConsumer(AsyncWebsocketConsumer):
                     'user': self.scope['user'].username
                 }
             )
-
+    
+    # Handle the room_deleted event
+    async def room_deleted(self, event):
+        # Notify the user that the room has been deleted
+        await self.send(text_data=json.dumps({
+            'type': 'room_deleted',
+            'message': event['message'],
+        }))
+        # Close the WebSocket connection
+        await self.close()
+    
     # Handlers for different message types
     async def play_track(self, event):
         # Send track to WebSocket

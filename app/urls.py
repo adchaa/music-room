@@ -10,4 +10,7 @@ urlpatterns = [
     path('create-or-join/', views.create_or_join_room, name='create_or_join_room'),
     path('random-room/', views.create_or_join_room, name='random_room'),
     path('room/<int:room_id>/', views.music_room_detail, name='music_room_detail'),
+    path('room/<int:room_id>/skip/', views.skip_room, name='skip_room'),
+    path('room/delete/<int:room_id>/', views.delete_room, name='delete_room'),
+
 ]

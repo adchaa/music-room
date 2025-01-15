@@ -37,7 +37,7 @@
             text-transform: uppercase;
         }
 
-        .logout-btn {
+        .logout-btn, .skip-btn, .delete-btn {
             padding: 0.5rem 1rem;
             font-size: 1rem;
             background: #ff4757;
@@ -49,7 +49,7 @@
             text-decoration: none;
         }
 
-        .logout-btn:hover {
+        .logout-btn:hover, .skip-btn:hover, .delete-btn:hover {
             background: #ff6b81;
         }
 
@@ -134,7 +134,19 @@
             {% endfor %}
         </div>
 
+        {% if not is_host %}
+        <div>
+            <a href="{% url 'skip_room' room.id %}" class="skip-btn">
+                Skip Room
+            </a>
+        </div>
+        {% endif %}
+
         {% if is_host %}
+        <form method="POST" action="{% url 'delete_room' room.id %}">
+            {% csrf_token %}
+            <button type="submit" class="delete-btn">Delete Room</button>
+        </form>
         <div class="music-controls">
             <input type="text" id="track-url" placeholder="Enter track URL">
             <button onclick="playTrack()">Play Track</button>
@@ -159,18 +171,22 @@
 
         // Handle incoming WebSocket messages
         socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            if (data.action === 'play_track') {
-                // Update music player with new track
-                const player = document.getElementById('music-player');
-                player.innerHTML = `
-                    <audio controls autoplay>
-                        <source src="${data.track}" type="audio/mpeg">
-                    </audio>
-                    <p>Now playing by ${data.user}</p>
-                `;
-            }
-        };
+    const data = JSON.parse(event.data);
+    if (data.action === 'play_track') {
+        // Update music player with new track
+        const player = document.getElementById('music-player');
+        player.innerHTML = `
+            <audio controls autoplay>
+                <source src="${data.track}" type="audio/mpeg">
+            </audio>
+            <p>Now playing by ${data.user}</p>
+        `;
+    }
+    if (data.action === 'room_deleted') {
+        alert(data.message);  // Show the message to participants
+        window.location.href = '/';  // Redirect to home page after room deletion
+    }
+};
     </script>
 </body>
 </html>
