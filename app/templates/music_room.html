@@ -118,17 +118,37 @@
             margin-top: 0.5rem;
             font-size: 1rem;
         }
+        .back-btn {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            margin-right: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: #45a049;
+        }
     </style>
 </head>
 <body>
     <div class="music-room">
         <div class="header-container">
             <h1>Music Room: {{ room.name }}</h1>
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            <div>
+                <a href="/" class="back-btn">Back to Home</a>
+                <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            </div>
         </div>
         
         <div class="participants">
             <h2>Participants</h2>
+            <div>{{ user.username }}</div>
             {% for participant in participants %}
                 <div>{{ participant.user.username }}</div>
             {% endfor %}
@@ -153,7 +173,8 @@
             const trackUrl = document.getElementById('track-url').value;
             socket.send(JSON.stringify({
                 'action': 'play_track',
-                'track': trackUrl
+                'track': trackUrl,
+                'room_id': roomId
             }));
         }
 

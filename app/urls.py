@@ -8,6 +8,7 @@ urlpatterns = [
     path('logout', views.logout_view, name='logout'),
     path('',views.home,name="home"),
     path('create-or-join/', views.create_or_join_room, name='create_or_join_room'),
+    path('create-room/', views.create_room, name='create_room'),
     path('random-room/', views.create_or_join_room, name='random_room'),
     path('room/<int:room_id>/', views.music_room_detail, name='music_room_detail'),
 ]

@@ -42,6 +42,16 @@ def logout_view(request):
     messages.success(request, 'You have been successfully logged out.')
     return redirect('home')
 
+
+@login_required
+def create_room(request):
+    room = MusicRoom.objects.create(
+        name=f"Room-{random.randint(1000, 9999)}",
+        host=request.user
+    )
+
+    return redirect('music_room_detail', room_id=room.id)
+
 @login_required
 def create_or_join_room(request):
     """
@@ -65,12 +75,6 @@ def create_or_join_room(request):
             host=request.user
         )
 
-    # Add current user to the room
-    RoomParticipant.objects.create(
-        user=request.user, 
-        room=room, 
-        is_host=room.host == request.user
-    )
 
     return redirect('music_room_detail', room_id=room.id)
 

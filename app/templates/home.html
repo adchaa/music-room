@@ -103,7 +103,10 @@
           <a href="{% url 'signup' %}" class="btn-primary">Sign Up</a>
       </div>
       {% else %}
-      <a href="{% url 'random_room' %}" class="btn-primary">Join random room</a>
+      <div class="nav-links">
+        <a href="{% url 'create_room' %}" class="btn-primary">Create room</a>
+        <a href="{% url 'random_room' %}" class="btn-primary">Join random room</a>
+      </div>
       {% endif %}
 
 
