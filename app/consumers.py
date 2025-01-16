@@ -10,9 +10,7 @@ class MusicRoomConsumer(AsyncWebsocketConsumer):
             self.room_group_name = f'music_room_{self.room_id}'
             self.user = self.scope["user"]
 
-            # Get room and check if user can join
             room = await database_sync_to_async(MusicRoom.objects.get)(id=self.room_id)
-            # Check if user is already in room
             existing_participant = await database_sync_to_async(
              RoomParticipant.objects.filter(
                 user=self.user,
@@ -23,14 +21,12 @@ class MusicRoomConsumer(AsyncWebsocketConsumer):
     
 
             if not existing_participant:
-                # Create room participant
                 await database_sync_to_async(lambda :RoomParticipant.objects.create(
                     user=self.user,
                     room=room,
                     is_host=room.host == self.user
                 ))()
 
-            # Join room group
             await self.channel_layer.group_add(
                 self.room_group_name,
                 self.channel_name
@@ -57,7 +53,6 @@ class MusicRoomConsumer(AsyncWebsocketConsumer):
             ).delete)()
             
 
-            # Leave room group
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
@@ -88,7 +83,6 @@ class MusicRoomConsumer(AsyncWebsocketConsumer):
         room.save()
 
     async def play_track(self, event):
-        # Send track to WebSocket
         await self.send(text_data=json.dumps({
             'action': 'play_track',
             'track': event['track'],

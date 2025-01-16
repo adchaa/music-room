@@ -57,7 +57,6 @@ def create_or_join_room(request):
     """
     View to create a new room or join an existing room
     """
-    # Try to find an existing room with space
     available_rooms = MusicRoom.objects.annotate(
         participant_count=Count('participants')
     ).filter(
@@ -66,10 +65,8 @@ def create_or_join_room(request):
     )
 
     if available_rooms.exists():
-        # Join a random available room
         room = random.choice(list(available_rooms))
     else:
-        # Create a new room if no available rooms
         room = MusicRoom.objects.create(
             name=f"Room-{random.randint(1000, 9999)}",
             host=request.user
@@ -83,6 +80,10 @@ def music_room_detail(request, room_id):
     """
     View to display a specific music room
     """
+    try:
+        room = MusicRoom.objects.get(id=room_id)
+    except MusicRoom.DoesNotExist:
+        return redirect('home')
     room = MusicRoom.objects.get(id=room_id)
     participants = room.participants.all()
     
@@ -92,3 +93,22 @@ def music_room_detail(request, room_id):
         'is_host': room.host == request.user
     }
     return render(request, 'music_room.html', context)
+
+@login_required
+def skip_room(request, room_id):
+    """
+    Skip the current room and join another available room.
+    """
+    current_room = MusicRoom.objects.get(id=room_id)
+    RoomParticipant.objects.filter(user=request.user, room=current_room).delete()
+    available_rooms = MusicRoom.objects.annotate(
+        participant_count=Count('participants')
+    ).filter(
+        is_active=True,
+        participant_count__lt=F('max_participants')
+    ).exclude(id=current_room.id)
+    if available_rooms.exists():
+        next_room = random.choice(list(available_rooms))
+        return redirect('music_room_detail', room_id=next_room.id)
+    messages.warning(request, 'No other music rooms are available. Redirecting to the homepage.')
+    return redirect('home')

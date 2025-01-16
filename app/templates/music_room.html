@@ -37,7 +37,7 @@
             text-transform: uppercase;
         }
 
-        .logout-btn {
+        .logout-btn, .skip-btn {
             padding: 0.5rem 1rem;
             font-size: 1rem;
             background: #ff4757;
@@ -49,7 +49,7 @@
             text-decoration: none;
         }
 
-        .logout-btn:hover {
+        .logout-btn:hover , .skip-btn:hover {
             background: #ff6b81;
         }
 
@@ -154,6 +154,13 @@
             {% endfor %}
         </div>
 
+        {% if not is_host %}
+            <div>
+                <a href="{% url 'skip_room' room.id %}" class="skip-btn">
+                    Skip Room
+                </a>
+            </div>
+        {% endif %}
         {% if is_host %}
         <div class="music-controls">
             <input type="text" id="track-url" placeholder="Enter track URL">
